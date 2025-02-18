@@ -1,11 +1,11 @@
 import React from 'react';
-import TodoList from '@/features/Todo/TodoList';
+import Project from '@/features/Project';
 
 
 function App() {
   return (
-    <div className="h-screen">
-      <TodoList />
+    <div className="min-h-screen p-6">
+      <Project />
     </div>
   );
 }

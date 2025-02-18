@@ -1,5 +1,5 @@
 
-import { StatusType } from "@/features/Todo/interface";
+import { StatusType } from "@/features/Task/interface";
 import { twMerge } from "tailwind-merge";
 const StatusToLabel = ({ status }: { status: StatusType }) => {
   const statusClass = 'text-white px-2 py-1 rounded-md text-xs w-12 flex justify-center items-center'

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 
 export default function DragList({
-  initialTodos,
+  initialTasks,
   className,
   ListItem,
   onUpdate,
 }: {
-  initialTodos: any[];
+  initialTasks: any[];
   className: (item: any) => string;
   ListItem: (item: any) => React.ReactNode;
   onUpdate: (updatedLists: any[]) => void;
 }) {
-  const [lists, setLists] = useState<any[]>(initialTodos || []);
+  const [lists, setLists] = useState<any[]>(initialTasks || []);
   const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
   const [isTouchDevice, setIsTouchDevice] = useState<boolean>(false);
 
