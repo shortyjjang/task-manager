@@ -6,6 +6,9 @@ import { store } from './store';
 import { Provider as JotaiProvider } from 'jotai';
 import reportWebVitals from './reportWebVitals';
 import './assets/styles/index.css'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
@@ -14,7 +17,9 @@ if (rootElement) {
     <React.StrictMode>
       <Provider store={store}>
         <JotaiProvider>
-          <AppRoutes />
+          <QueryClientProvider client={queryClient}>
+            <AppRoutes />
+          </QueryClientProvider>
         </JotaiProvider>
       </Provider>
     </React.StrictMode>

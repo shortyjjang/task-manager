@@ -2,10 +2,10 @@
 
 
 ## 주요 설정
-✅ **Redux**: 전역 상태 (예: 유저 정보, API 데이터) 관리
-✅ **Jotai**: 컴포넌트별 로컬 상태 관리
-✅ **react-hook-form**: 폼 데이터 유효성 검사
-✅ **react-router-dom**: 페이지 라우팅
+- ✅ **Redux**: 전역 상태 (예: 유저 정보, API 데이터) 관리
+- ✅ **Jotai**: 컴포넌트별 로컬 상태 관리
+- ✅ **react-hook-form**: 폼 데이터 유효성 검사
+- ✅ **react-router-dom**: 페이지 라우팅
 
 ## 도메인별 상태 관리
 - Redux는 글로벌 상태(예: 유저 정보, 테마 설정)를 관리, RTK Query를 사용하여 API 상태를 관리
