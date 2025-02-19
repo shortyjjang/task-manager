@@ -3,7 +3,7 @@ import Home from "./pages/Home";
 import LayoutProvier from "./context/LayoutProvier";
 import ErrorBoundary from "./context/ErrorBoundary";
 import Login from "./pages/Login";
-import ProjectDetail from "./features/Project/ProjectDetail";
+import Project from "./pages/Project";
 const AppRoutes = () => (
   <Router>
     <LayoutProvier>
@@ -11,7 +11,7 @@ const AppRoutes = () => (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/project/:id" element={<ProjectDetail />} />
+          <Route path="/project/:id" element={<Project />} />
         </Routes>
       </ErrorBoundary>
     </LayoutProvier>

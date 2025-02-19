@@ -1,6 +1,8 @@
+import Modal from "@/stories/Modal";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 export default function LayoutProvier({
   children,
 }: {
@@ -13,5 +15,11 @@ export default function LayoutProvier({
       navigate("/login");
     }
   }, [navigate, user.username]);
-  return <div className="min-h-screen flex flex-col">{children}</div>;
+  return (
+    <div className="min-h-screen flex flex-col">
+      {children}
+      <Modal
+      />
+    </div>
+  );
 }
