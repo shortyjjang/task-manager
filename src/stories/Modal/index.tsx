@@ -28,7 +28,7 @@ export default function Modal() {
   if (isOpen)
     return (
       <div
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 overflow-y-auto"
+        className="fixed inset-0 flex items-center justify-center bg-[#00000040] transition-opacity duration-300 overflow-y-auto"
         style={{ opacity }}
         onClick={(e) => {
           if (e.target === e.currentTarget) {
