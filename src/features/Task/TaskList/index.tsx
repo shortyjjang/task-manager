@@ -3,7 +3,7 @@ import StatusToLabel from "@/features/Task/StatusToLabel";
 import PriorityToLabel from "@/features/Task/PriorityToLabel";
 import { twMerge } from "tailwind-merge";
 import DragList from "@/stories/DragList";
-import { TaskType } from "../interface";
+import { TaskType } from "../type";
 
 export default function TaskList({
   isShowUser = false,
@@ -50,7 +50,7 @@ export default function TaskList({
                 <span className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
                   <img
                     src={task.assignee?.thumbnail || "https://placehold.co/400"}
-                    alt={task.assignee?.name}
+                    alt={task.assignee?.username}
                     className="w-full h-full object-cover"
                   />
                 </span>
@@ -64,6 +64,6 @@ export default function TaskList({
       />
     );
   }
-  return null;
+  return <div className="text-gray-500 text-center py-20">업무가 없습니다.</div>;
 }
 

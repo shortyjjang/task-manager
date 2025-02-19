@@ -1,21 +1,24 @@
 import React from "react";
-import { TaskType } from "@/features/Task/interface";
+import { StatusType, TaskType } from "@/features/Task/type";
 import { useQuery } from "@tanstack/react-query";
-import StatusToLabel from "@/features/Task/StatusToLabel";
+import StatusToLabel, { statusType } from "@/features/Task/StatusToLabel";
 import PriorityToLabel from "@/features/Task/PriorityToLabel";
-import TaskList from "../Task/TaskList";
+import TaskList from "@/features/Task/TaskList";
 import { IoMdTime } from "react-icons/io";
+import Badge from "@/stories/Badge";
+import { useParams } from "react-router-dom";
 
-export default function Project() {
+export default function ProjectDetail() {
+  const { id } = useParams();
   const { data: project } = useQuery<TaskType>({
-    queryKey: ["project"],
+    queryKey: ["project", id],
     queryFn: () => {
       return dummyProjects;
     },
   });
   if (project) {
     return (
-      <div>
+      <div className="p-4">
         <h2 className="text-2xl font-bold pb-2">
           <PriorityToLabel priority={project?.priority} /> {project?.title}
         </h2>
@@ -25,14 +28,31 @@ export default function Project() {
               className="h-2 bg-blue-500 rounded-s-full rounded-e-full"
               style={{
                 width:
-                  ((project.children || []).filter(
+                  (((project.children || []).filter(
                     (child) => child.status === "COMPLETED"
-                  ).length || 0) / ((project.children || []).length || 0) * 100,
+                  ).length || 0) /
+                    ((project.children || []).length || 0)) *
+                  100,
               }}
             ></div>
           )}
         </div>
-        <StatusToLabel status={project?.status} />
+        <div className="flex gap-2 flex-wrap">
+          {Object.entries(statusType).map(([status, label]) =>
+            status === project?.status ? (
+              <StatusToLabel
+                key={status}
+                status={status as StatusType}
+                size="md"
+                className="w-auto"
+              />
+            ) : (
+              <Badge key={status} variant="default" size="md">
+                {label}
+              </Badge>
+            )
+          )}
+        </div>
         <ul className="flex flex-col gap-1 pt-4 text-gray-500 text-sm">
           <li className="flex items-center gap-2">
             <IoMdTime /> 생성일: {project?.createdAt}
@@ -41,6 +61,23 @@ export default function Project() {
             <IoMdTime /> 마감일: {project?.dueDate}
           </li>
         </ul>
+        <h4 className="font-bold pt-4 pb-1">참여자</h4>
+        <div className="flex items-center gap-2 flex-wrap">
+          {(project?.assigneeHistory || []).map(
+            (assignee, index, _self) =>
+              (_self || []).findIndex(
+                (assign) =>
+                  assign.fromUser?.username === assignee.fromUser?.username
+              ) === index && (
+                  <img
+                  key={assignee.id} 
+                    src={assignee.fromUser?.thumbnail}
+                    alt={assignee.fromUser?.username}
+                    className="w-10 h-10 rounded-full"
+                  />
+              )
+          )}
+        </div>
         <h3 className="text-lg font-bold pt-4 pb-2">하위 테스트</h3>
         <div className="shadow border border-gray-200 rounded-md p-4">
           <TaskList isShowUser={true} initialTasks={project?.children || []} />
@@ -60,7 +97,24 @@ const dummyProjects: TaskType = {
   createdAt: "2024-01-01",
   updatedAt: "2024-01-01",
   dueDate: "2024-01-01",
-  assigneeHistory: [],
+  assigneeHistory: [
+    {
+      id: "1",
+      fromUser: {
+        id: "1",
+        username: "John Doe",
+        email: "john.doe@example.com",
+        thumbnail: "https://placehold.co/400",
+      },
+      toUser: {
+        id: "2",
+        username: "Hong Gil Dong",
+        email: "hong.gil.dong@example.com",
+        thumbnail: "https://placehold.co/400",
+      },
+      updatedAt: "2024-01-01",
+    },
+  ],
   comments: [],
   children: [
     {

@@ -1,22 +1,31 @@
 
-import { StatusType } from "@/features/Task/interface";
+import { StatusType } from "@/features/Task/type";
+import Badge from "@/stories/Badge";
 import { twMerge } from "tailwind-merge";
-const StatusToLabel = ({ status }: { status: StatusType }) => {
-  const statusClass = 'text-white px-2 py-1 rounded-md text-xs w-12 flex justify-center items-center'
-    switch (status) {
-      case "REQUEST":
-        return <span className={twMerge(statusClass, 'bg-blue-500')}>요청</span>;
+
+const StatusToLabel = ({ status, size = "sm", className }: { status: StatusType, size?: "sm" | "md" | "lg", className?: string }) => {
+  switch (status) {
+    case "REQUEST":
+      return <Badge variant="primary" size={size} className={twMerge('w-12', className)}>요청</Badge>;
       case "IN_PROGRESS":
-        return <span className={twMerge(statusClass, 'bg-green-500')}>진행중</span>;
+        return <Badge variant="success" size={size} className={twMerge('w-12', className)}>진행중</Badge>;
       case "FEEDBACK":
-        return <span className={twMerge(statusClass, 'bg-orange-500')}>피드백</span>;
+        return <Badge variant="warning" size={size} className={twMerge('w-12', className)}>피드백</Badge>;
       case "COMPLETED":
-        return <span className={twMerge(statusClass, 'bg-sky-900')}>완료</span>;
+        return <Badge variant="secondary" size={size} className={twMerge('w-12', className)}>완료</Badge>;
       case "PENDING":
-        return <span className={twMerge(statusClass, 'bg-gray-300')}>보류</span>;
+        return <Badge variant="default" size={size} className={twMerge('w-12', className)}>보류</Badge>;
       default:
         return null;
     }
   };
 
 export default StatusToLabel;
+
+export const statusType = {
+  REQUEST: '요청',
+  IN_PROGRESS: '진행중',
+  FEEDBACK: '피드백',
+  COMPLETED: '완료',
+  PENDING: '보류',
+}

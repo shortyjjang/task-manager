@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 export default function DragList({
   initialTasks,
@@ -13,22 +14,13 @@ export default function DragList({
 }) {
   const [lists, setLists] = useState<any[]>(initialTasks || []);
   const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
-  const [isTouchDevice, setIsTouchDevice] = useState<boolean>(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(pointer: coarse)");
-    setIsTouchDevice(mediaQuery.matches);
-
-    const handleMediaChange = (e: MediaQueryListEvent) => {
-      setIsTouchDevice(e.matches);
-    };
-
-    mediaQuery.addEventListener("change", handleMediaChange);
-    return () => mediaQuery.removeEventListener("change", handleMediaChange);
-  }, []);
+  const [draggingStyle, setDraggingStyle] = useState<React.CSSProperties>({});
+  const listRef = useRef<HTMLUListElement | null>(null);
+  const placeholderRef = useRef<HTMLLIElement | null>(null);
 
   const handleDragStart = (index: number) => {
     setDraggedItemIndex(index);
+    // 드래그 시작 시 추가적인 로직이 필요하다면 여기에 추가
   };
 
   const handleDragOver = (index: number) => {
@@ -51,42 +43,89 @@ export default function DragList({
     setDraggedItemIndex(index);
   };
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleMove = (clientX: number, clientY: number) => {
+    const listRect = listRef.current?.getBoundingClientRect();
+    if (!listRect) return;
+
+    const offsetY = clientY - listRect.top;
+    setDraggingStyle({
+      position: "absolute",
+      top: `${offsetY}px`,
+      left: "0",
+      right: "0",
+      zIndex: 1000,
+      pointerEvents: "none",
+    });
+
+    const target = document.elementFromPoint(clientX, clientY);
+    if (!target) return;
+    const targetRect = target.getBoundingClientRect();
+    const targetMiddleY = targetRect.top + targetRect.height / 2;
+    const touchY = clientY;
+
+    // 드래그 중인 항목이 대상 항목의 높이의 가운데 20%를 넘었을 때만 인덱스를 변경
+    if (
+      touchY > targetMiddleY - targetRect.height * 0.1 &&
+      touchY < targetMiddleY + targetRect.height * 0.1
+    ) {
+      const newIndex = Array.from(target.parentNode!.children).indexOf(target);
+      if (newIndex !== -1 && newIndex !== draggedItemIndex) {
+        handleDragOver(newIndex);
+      }
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLLIElement>) => {
+    e.preventDefault();
+    if (draggedItemIndex === null) return;
+    const { clientX, clientY } = e;
+    handleMove(clientX, clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLLIElement>) => {
     e.preventDefault();
     if (draggedItemIndex === null) return;
 
     const touch = e.touches[0];
-    const target = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (!target) return;
-
-    const newIndex = Array.from(target.parentNode!.children).indexOf(target);
-    if (newIndex !== -1 && newIndex !== draggedItemIndex) {
-      handleDragOver(newIndex);
-    }
+    handleMove(touch.clientX, touch.clientY);
   };
 
   const handleTouchEnd = () => {
     setDraggedItemIndex(null);
+    setDraggingStyle({});
   };
   return (
-    <ul className="flex flex-col gap-px">
+    <ul className="flex flex-col gap-px relative" ref={listRef}>
       {lists.map((list, index) => (
-        <li
-          key={list.id}
-          draggable={!isTouchDevice}
-          onDragStart={() => handleDragStart(index)}
-          onDragOver={(e) => {
-            e.preventDefault();
-            handleDragOver(index);
-          }}
-          onDragEnd={handleDragEnd}
-          onTouchStart={() => handleTouchStart(index)}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          className={className(list)}
-        >
-          {ListItem(list)}
-        </li>
+        <React.Fragment key={list.id}>
+          <li
+            key={list.id}
+            ref={draggedItemIndex === index ? placeholderRef : null}
+            onMouseDown={() => handleDragStart(index)}
+            onMouseMove={(e) => handleMouseMove(e)}
+            onMouseUp={handleDragEnd}
+            onTouchStart={() => handleTouchStart(index)}
+            onTouchMove={(e) => handleTouchMove(e)}
+            onTouchEnd={handleTouchEnd}
+            className={twMerge(
+              className(list),
+              draggedItemIndex === index ? "bg-gray-100 absolute w-full" : ""
+            )}
+            style={draggedItemIndex === index ? draggingStyle : {}}
+          >
+            {ListItem(list)}
+          </li>
+          {draggedItemIndex === index && (
+            <li
+              className={twMerge(className(list), "bg-opacity-50 bg-white")}
+              style={{
+                height: placeholderRef.current?.offsetHeight,
+              }}
+            >
+              {ListItem(list)}
+            </li>
+          )}
+        </React.Fragment>
       ))}
     </ul>
   );

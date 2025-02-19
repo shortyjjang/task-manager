@@ -1,16 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import AppRoutes from './routes';
-import { Provider } from 'react-redux';
-import { store } from './store';
-import { Provider as JotaiProvider } from 'jotai';
-import reportWebVitals from './reportWebVitals';
-import './assets/styles/index.css'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import AppRoutes from "./routes";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import { Provider as JotaiProvider } from "jotai";
+import reportWebVitals from "./reportWebVitals";
+import "./assets/styles/index.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
-const rootElement = document.getElementById('root');
+const rootElement = document.getElementById("root");
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(

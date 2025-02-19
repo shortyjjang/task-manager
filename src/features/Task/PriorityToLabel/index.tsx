@@ -1,5 +1,5 @@
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
-import { PriorityType } from "@/features/Task/interface";
+import { PriorityType } from "@/features/Task/type";
 import { twMerge } from "tailwind-merge";
 
 const PriorityToLabel = ({ priority }: { priority: PriorityType }) => {
